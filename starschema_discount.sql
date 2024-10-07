@@ -1,12 +1,17 @@
 -- Fact Table
 create view fact_sales as
-select t.transactionid, t.storeid, t.saleschannelid, s.categoryid, t.discountpct,
-s.sizeofshoe
+select t.transactionid, s.saleitemid, t.storeid, t.saleschannelid, s.categoryid, t.discountpct,
+s.itemprice, s.totalprice
 from saletransaction t
 join saleitem s
 on t.transactionid = s.transactionid;
 
 select * from fact_sales;
+
+-- Sale Item Dimension
+create view dim_saleitem as
+select saleitemid, sizeofshoe
+from saleitem;
 
 -- Category Dimension
 create view dim_category as
@@ -44,4 +49,6 @@ select storeid, count(transactionid) from fact_sales
 where discountpct = 0
 group by storeid;
 
-
+select * from fact_sales
+join dim_saleitem
+on fact_sales.saleitemid = dim_saleitem.saleitemid
